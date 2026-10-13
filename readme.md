@@ -184,12 +184,22 @@ Toutes les données (historique, profil, XP, séries, humeurs) sont stockées da
 
 ---
 
+## 🎨 Direction artistique « Encre »
+
+- **Principe :** l'interface est en noir et blanc, la couleur appartient aux habitudes. Chaque habitude a son encre ; une carte validée se remplit entièrement de cette couleur.
+- **Bande d'encre :** en haut de l'accueil, un segment par habitude du jour se remplit au fil des validations.
+- **Typographies :** Bricolage Grotesque (titres et chiffres, version condensée) et Instrument Sans (texte).
+- **Navigation :** dock flottant, seul l'onglet actif affiche son libellé.
+- **Thèmes :** clair (papier gris froid) et sombre, mêmes encres dans les deux.
+
+---
+
 ## 🛠️ Architecture Technique
 
 ```
 habitstracker/
 ├── index.html          # Structure sémantique + modales (Profile, Joker, Mood)
-├── style.css           # Design system dark mode via variables CSS
+├── style.css           # Design system « Encre » (thèmes clair / sombre via variables CSS)
 ├── script.js           # Logique métier complète (stockage, XP, streaks, audio, DOM)
 ├── sw.js               # Service Worker (cache, offline, notifications planifiées)
 ├── manifest.json       # Manifeste PWA (icônes, couleurs, orientation)

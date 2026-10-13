@@ -1,25 +1,45 @@
 const HABITS = [
-  {id:'sleep',    name:'Sleep',             emoji:'💤', type:'good',    color:'#60A5FA', freq:'Everyday',        weekdayOnly:true},
-  {id:'projets',  name:'Personal Projects', emoji:'🚀', type:'good',    color:'#A78BFA', freq:'Everyday',        weekdayOnly:false},
-  {id:'work',     name:'Work',              emoji:'💼', type:'good',    color:'#FBBF24', freq:'5 days per week', weekdayOnly:true},
-  {id:'gym',      name:'Gym',               emoji:'🏋️', type:'good',    color:'#4ADE80', freq:'5 days per week', weekdayOnly:true},
-  {id:'running',  name:'Running',           emoji:'🏃', type:'counter', color:'#F97316', freq:'5 days per week', weekdayOnly:false, step:1, goal:5, max:15, unit:'km'},
-  {id:'setp',     name:'Setps',             emoji:'👣', type:'counter', color:'#34D399', freq:'Everyday',        weekdayOnly:false, step:1000, goal:10000, max:20000, unit:'steps'},
-  {id:'drink',    name:'Drink Water',       emoji:'💧', type:'drink',   color:'#38BDF8', freq:'Everyday',        weekdayOnly:false},
-  {id:'read',     name:'Read',              emoji:'📚', type:'good',    color:'#A78BFA', freq:'Everyday',        weekdayOnly:false, optional:true},
-  {id:'cleaning', name:'Cleaning',          emoji:'🧹', type:'weekly',  color:'#4ADE80', freq:'Once a week',     weekdayOnly:false, optional:true},
+  {id:'sleep',    name:'Sommeil',           emoji:'💤', type:'good',    color:'#8EA2FF', freq:'Tous les jours',      weekdayOnly:true},
+  {id:'projets',  name:'Projets perso',     emoji:'🚀', type:'good',    color:'#C79BFF', freq:'Tous les jours',      weekdayOnly:false},
+  {id:'work',     name:'Travail',           emoji:'💼', type:'good',    color:'#FFD23F', freq:'Lundi - Vendredi',    weekdayOnly:true},
+  {id:'gym',      name:'Gym',               emoji:'🏋️', type:'good',    color:'#52E0A1', freq:'Lundi - Vendredi',    weekdayOnly:true},
+  {id:'running',  name:'Running',           emoji:'🏃', type:'counter', color:'#FF8A4C', freq:'5 jours par semaine', weekdayOnly:false, step:1, goal:5, max:15, unit:'km'},
+  {id:'setp',     name:'Pas',               emoji:'👣', type:'counter', color:'#2EC4B6', freq:'Tous les jours',      weekdayOnly:false, step:1000, goal:10000, max:20000, unit:'pas'},
+  {id:'drink',    name:"Boire de l'eau",    emoji:'💧', type:'drink',   color:'#52C7F2', freq:'Tous les jours',      weekdayOnly:false},
+  {id:'read',     name:'15min Lecture',     emoji:'📚', type:'counter', color:'#FF7EB0', freq:'Tous les jours',      weekdayOnly:false, optional:true, step:5, goal:15, max:30, unit:'min'},
+  {id:'cleaning', name:'Nettoyage',         emoji:'🧹', type:'weekly',  color:'#C3E34A', freq:'Tous les dimanches',  weekdayOnly:false, optional:true},
 ];
 
 const DRINK_GOAL = 2000;
 const DRINK_STEP = 250;
 const DRINK_MAX  = 5000;
 
+// Icônes ligne (style Feather) affichées dans les badges des habit-cards, à la place de l'emoji brut.
+const HABIT_ICONS = {
+  sleep:    '<path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>',
+  projets:  '<path d="M12 2.5c2.3 2.1 3.7 5.3 3.7 8.5 0 1.9-.4 3.4-1 4.8l-2.7 2.7-2.7-2.7c-.6-1.4-1-2.9-1-4.8 0-3.2 1.4-6.4 3.7-8.5z"/><circle cx="12" cy="10.5" r="1.4"/><path d="M9.3 15.5L7 17M14.7 15.5L17 17M10.3 18.7L12 21.5l1.7-2.8"/>',
+  work:     '<rect x="3" y="7" width="18" height="12" rx="2"/><path d="M8 7V5.5A1.5 1.5 0 0 1 9.5 4h5A1.5 1.5 0 0 1 16 5.5V7"/><path d="M3 12.5h18"/>',
+  gym:      '<rect x="1.5" y="9" width="3" height="6" rx="1"/><rect x="19.5" y="9" width="3" height="6" rx="1"/><rect x="4.5" y="10.3" width="3" height="3.4" rx="0.6"/><rect x="16.5" y="10.3" width="3" height="3.4" rx="0.6"/><line x1="7.5" y1="12" x2="16.5" y2="12"/>',
+  running:  '<circle cx="14.2" cy="4.2" r="1.6"/><path d="M9.5 20l2-5.5 3 1.8 2 3.7"/><path d="M7.3 13.2l2.9-2.7 2.1 1 2.8-1.2"/><path d="M5.5 17l3-2.2"/>',
+  setp:     '<ellipse cx="9" cy="7.3" rx="2.6" ry="3.7" fill="currentColor" stroke="none" transform="rotate(-14 9 7.3)"/><ellipse cx="15.5" cy="15.6" rx="2.6" ry="3.7" fill="currentColor" stroke="none" transform="rotate(14 15.5 15.6)"/>',
+  drink:    '<path d="M12 3.3c3.6 4.6 6.3 7.9 6.3 11.2a6.3 6.3 0 1 1-12.6 0c0-3.3 3-6.6 6.3-11.2z"/>',
+  read:     '<path d="M4 5.8c0-1 .8-1.8 1.8-1.8H11v15.5H5.8A1.8 1.8 0 0 1 4 17.7V5.8z"/><path d="M20 5.8c0-1-.8-1.8-1.8-1.8H13v15.5h5.2c1 0 1.8-.8 1.8-1.8V5.8z"/>',
+  cleaning: '<line x1="18.5" y1="4" x2="10" y2="12.5"/><path d="M10 12.5l-4.3 7 2.6 1 3-6.3 1.7-1.7"/><path d="M4.5 21l1.8-2.8"/>',
+  bad:      '<circle cx="12" cy="12" r="8.5"/>',
+};
+
+function habitIconMarkup(habit) {
+  const p = HABIT_ICONS[habit.id];
+  if (!p) return habit.emoji;
+  return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
+}
+
 const LEVEL_THRESHOLDS = [0,100,250,500,800,1200,1700,2400,3200,4200];
 const LEVEL_NAMES = ['Novice','Apprentice','Practitioner','Devotee','Disciplined','Focused','Master','Grandmaster','Legend','Transcendent'];
 
 const MOOD_LABELS  = ['','Bad','Not Good','Okay','Good','Great'];
 const MOOD_EMOJIS  = ['','😡','😢','😐','😊','😎'];
-const MOOD_COLORS  = ['','#F76F6F','#FB923C','#FBBF24','#4BD08B','#7C6FF7'];
+const MOOD_COLORS  = ['','#FF6B6B','#FF8A4C','#FFD23F','#52E0A1','#8EA2FF'];
 
 const FEELINGS_BY_MOOD = {
   5: ['Happy','Brave','Motivated','Creative','Confident','Calm','Grateful','Peaceful','Excited','Loved','Hopeful','Inspired','Proud','Euphoric','Nostalgic'],
@@ -35,6 +55,8 @@ const MONTH_SHORT  = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct
 const DAY_FULL    = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 const DAY_SHORT   = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 
+const cssVar = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const withAlpha = (hex,a) => { const h=hex.replace('#',''); const f=h.length===3?h.split('').map(c=>c+c).join(''):h; const n=parseInt(f,16); return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`; };
 const fmtDate = d => {
   const y = d.getFullYear();
   const m = String(d.getMonth()+1).padStart(2,'0');
@@ -297,7 +319,7 @@ function launchConfetti() {
   const canvas=document.getElementById('confettiCanvas');
   if(!canvas) return;
   canvas.width=window.innerWidth; canvas.height=window.innerHeight;
-  const colors=['#7C6FF7','#4BD08B','#F76F6F','#FBBF24','#60A5FA','#F9A8D4'];
+  const colors=['#8EA2FF','#C79BFF','#FFD23F','#52E0A1','#FF8A4C','#FF7EB0','#52C7F2'];
   _confParticles=Array.from({length:90},()=>({x:Math.random()*canvas.width,y:-10,vy:2+Math.random()*3,vx:(Math.random()-0.5)*4,rot:Math.random()*360,size:6+Math.random()*8,color:colors[Math.floor(Math.random()*colors.length)],alpha:1}));
   animateConfetti();
 }
@@ -344,7 +366,30 @@ function renderHome() {
   if(activeHomeTab==='today')   renderTodayTab();
   if(activeHomeTab==='weekly')  renderWeeklyTab();
   if(activeHomeTab==='overall') renderOverallTab();
+  renderHero();
+  const w=document.getElementById('home-wellness'); if(w) w.classList.toggle('hidden',activeHomeTab!=='today');
   renderSleepSummary();
+}
+
+function renderHero() {
+  const el=document.getElementById('todayHero'); if(!el) return;
+  const todayDate=new Date(); todayDate.setHours(0,0,0,0); const t=today();
+  const active=HABITS.filter(h=>!h.optional&&isDayActive(h,todayDate));
+  const done=active.filter(h=>isHabitDoneOn(h,t,todayDate));
+  const perfect=active.length>0&&done.length===active.length;
+  const date=new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
+  const level=calcLevel(DB.xp);
+  const strip=active.map(h=>`<span class="ink-seg${isHabitDoneOn(h,t,todayDate)?' done':''}" style="--ink:${h.color}" title="${h.name}"></span>`).join('');
+  el.innerHTML=`
+    <div class="hero-date">${date}</div>
+    <div class="hero-score">
+      <div class="hero-count${perfect?' perfect':''}" role="img" aria-label="${done.length} habitudes sur ${active.length}">${done.length}<small>/${active.length}</small></div>
+      <div class="hero-side">
+        <div class="hero-caption">${perfect?'Journée parfaite':'habitudes faites'}</div>
+        <div class="hero-level">Niv. ${level} · ${LEVEL_NAMES[level-1]||'Novice'}</div>
+      </div>
+    </div>
+    <div class="ink-strip" aria-hidden="true">${strip}</div>`;
 }
 
 function renderTodayTab() {
@@ -354,17 +399,20 @@ function renderTodayTab() {
   HABITS.forEach(habit=>{
     if(!isDayActive(habit,todayDate)) return;
     const card=document.createElement('div');
-    card.className='habit-card today-card'; card.dataset.habitId=habit.id;
-    const colorBg=habit.color+'22';
-    const control=buildTodayControl(habit,t,todayDate);
     const isSimple=['good','bad','weekly'].includes(habit.type);
+    const cardDone = habit.type!=='bad' && isHabitDoneOn(habit,t,todayDate);
+    card.className='habit-card today-card'+(cardDone?' done':''); card.dataset.habitId=habit.id; card.style.setProperty('--ink',habit.color);
+    const control=buildTodayControl(habit,t,todayDate);
+    const subMarkup = (cardDone && isSimple)
+      ? `<div class="today-card-sub done-flourish">accompli !</div>`
+      : `<div class="today-card-sub">${buildTodaySubLabel(habit,t,todayDate)}</div>`;
     card.innerHTML=`
       <div class="today-card-top">
         <div class="today-card-left">
-          <div class="today-emoji-box" style="background:${colorBg}">${habit.emoji}</div>
+          <div class="today-emoji-box">${habitIconMarkup(habit)}</div>
           <div class="today-card-info">
             <div class="today-card-name">${habit.name}</div>
-            <div class="today-card-sub">${buildTodaySubLabel(habit,t,todayDate)}</div>
+            ${subMarkup}
           </div>
         </div>
         ${isSimple?control:""}
@@ -381,17 +429,11 @@ function renderTodayTab() {
 
 function buildTodaySubLabel(habit,t,todayDate) {
   const streak=calcStreak(habit).current;
-  if(habit.type==='drink') {
-    const ml=getDrinkMl(t); return `${ml}ml / ${DRINK_GOAL}ml${streak>0?` · 🔥 ${streak}d`:''}`;
-  }
-  if(habit.type==='counter') {
-    const v=getCounterVal(habit.id,t); const u=habit.unit?` ${habit.unit}`:''; return `${v}${u} / ${habit.goal}${u}${streak>0?` · 🔥 ${streak}d`:''}`;
-  }
   if(habit.type==='bad') {
     const fail=isBadFail(habit.id,t);
-    return `${fail?'⚠ Slipped':'✓ Holding'} · 🔥 ${streak}d streak`;
+    return `${fail?'⚠ Craqué':'✓ Tenu bon'} · 🔥 ${streak}j`;
   }
-  return streak>0?`🔥 ${streak} day streak`:(habit.freq||'Everyday');
+  return streak>0?`🔥 ${streak} jours de suite`:(habit.freq||'Tous les jours');
 }
 
 function buildTodayControl(habit,t,todayDate) {
@@ -400,12 +442,12 @@ function buildTodayControl(habit,t,todayDate) {
     const atMax=ml>=DRINK_MAX;
     return `<div style="width:100%">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-        <span style="font-size:.75rem;color:var(--text-2)">${ml}ml / ${DRINK_GOAL}ml</span>
-        <button class="habit-toggle-btn${ml>=DRINK_GOAL?' done':''}" style="${ml>=DRINK_GOAL?`background:${habit.color}`:'border-color:'+habit.color}" onclick="removeDrink()">
+        <span class="drink-amount">${ml} ml / ${DRINK_GOAL} ml</span>
+        <button class="habit-toggle-btn${ml>=DRINK_GOAL?' done':''}" onclick="removeDrink()">
           <svg class="check-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor"><polyline points="4 10 8 14 16 6"/></svg>
         </button>
       </div>
-      <div class="drink-bar-track"><div class="drink-bar-fill" style="width:${pct}%;background:${habit.color}"></div></div>
+      <div class="drink-bar-track"><div class="drink-bar-fill" style="width:${pct}%"></div></div>
       ${atMax?'':`<div class="drink-btns">
         <button class="drink-btn" onclick="addDrinkAmount(250)">+250ml</button>
         <button class="drink-btn" onclick="addDrinkAmount(500)">+500ml</button>
@@ -418,13 +460,12 @@ function buildTodayControl(habit,t,todayDate) {
     return `<div class="counter-row" style="width:100%;justify-content:space-between;margin-top:0">
       <button class="counter-btn" onclick="removeCounter('${habit.id}')">−</button>
       <span class="counter-val">${v}${u} / ${habit.goal}${u}</span>
-      ${atMax?'<div style="width:34px"></div>':`<button class="counter-btn" onclick="addCounter('${habit.id}')" style="${done?`background:${habit.color+'30'};color:${habit.color}`:''}">+</button>`}
+      ${atMax?'<div style="width:34px"></div>':`<button class="counter-btn${done?' done':''}" onclick="addCounter('${habit.id}')">+</button>`}
     </div>`;
   }
   if(habit.type==='bad') {
     const fail=isBadFail(habit.id,t);
-    return `<button class="habit-toggle-btn${fail?' done':''}"
-      style="${fail?'background:#F76F6F;border-color:#F76F6F':'border-color:#4BD08B90'}"
+    return `<button class="habit-toggle-btn${fail?' done fail':''}"
       onclick="toggleHabit('${habit.id}')">
       <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" width="20" height="20" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         ${fail?'<line x1="5" y1="5" x2="15" y2="15"/><line x1="15" y1="5" x2="5" y2="15"/>':'<polyline points="4 10 8 14 16 6"/>'}
@@ -432,7 +473,7 @@ function buildTodayControl(habit,t,todayDate) {
     </button>`;
   }
   const done=habit.type==='weekly'?isWeeklyDoneForWeek(habit.id,getWeekMonday(todayDate)):DB.habits[habit.id].logs[t]==='done';
-  return `<button class="habit-toggle-btn${done?' done':''}" style="${done?`background:${habit.color};border-color:${habit.color}`:`border-color:${habit.color+'80'}`}" onclick="toggleHabit('${habit.id}')">
+  return `<button class="habit-toggle-btn${done?' done':''}" onclick="toggleHabit('${habit.id}')">
     <svg class="check-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor"><polyline points="4 10 8 14 16 6"/></svg>
   </button>`;
 }
@@ -445,7 +486,7 @@ function renderWeeklyTab() {
   const monday=addDays(todayDate,-todayDow);
   HABITS.forEach(habit=>{
     const card=document.createElement('div');
-    card.className='habit-card'; card.dataset.habitId=habit.id;
+    card.className='habit-card'; card.dataset.habitId=habit.id; card.style.setProperty('--ink',habit.color);
     const bgAlpha='22';
     let daysHtml='';
     DAY_SHORT.forEach((dayLbl,i)=>{
@@ -467,13 +508,13 @@ function renderWeeklyTab() {
     card.innerHTML=`
       <div class="habit-card-header">
         <div class="habit-card-left">
-          <div class="habit-card-emoji" style="background:${habit.color+'22'}">${habit.emoji}</div>
+          <div class="habit-card-emoji">${habitIconMarkup(habit)}</div>
           <div>
             <div class="habit-card-name">${habit.name}</div>
-            <div class="habit-card-freq" style="font-size:.74rem;color:var(--text-2)">${habit.freq||'Everyday'}</div>
+            <div class="habit-card-freq">${habit.freq||'Tous les jours'}</div>
           </div>
         </div>
-        <div style="font-size:.75rem;color:var(--text-2);font-weight:700">🔥 ${calcStreak(habit).current}d</div>
+        <div class="streak-pill">🔥 ${calcStreak(habit).current} j</div>
       </div>
       <div class="week-day-row">${daysHtml}</div>
     `;
@@ -509,7 +550,7 @@ function renderOverallTab() {
 
   HABITS.forEach(habit=>{
     const card=document.createElement('div');
-    card.className='habit-card'; card.dataset.habitId=habit.id;
+    card.className='habit-card'; card.dataset.habitId=habit.id; card.style.setProperty('--ink',habit.color);
     let gridHtml='';
     DAY_SHORT.forEach((dayLbl,dow)=>{
       gridHtml+=`<div class="overall-row-label">${dayLbl[0]}</div>`;
@@ -529,13 +570,13 @@ function renderOverallTab() {
     card.innerHTML=`
       <div class="habit-card-header">
         <div class="habit-card-left">
-          <div class="habit-card-emoji" style="background:${habit.color+'22'}">${habit.emoji}</div>
+          <div class="habit-card-emoji">${habitIconMarkup(habit)}</div>
           <div>
             <div class="habit-card-name">${habit.name}</div>
-            <div class="habit-card-freq" style="font-size:.74rem;color:var(--text-2)">${habit.freq||'Everyday'}</div>
+            <div class="habit-card-freq">${habit.freq||'Tous les jours'}</div>
           </div>
         </div>
-        <div style="font-size:.75rem;color:var(--text-2);font-weight:700">🔥 ${calcStreak(habit).current}d</div>
+        <div class="streak-pill">🔥 ${calcStreak(habit).current} j</div>
       </div>
       <div class="overall-dot-grid">${gridHtml}</div>
     `;
@@ -849,7 +890,7 @@ function drawLineChart(canvasId) {
   const ctx=canvas.getContext('2d');
   const W=canvas.offsetWidth; const H=160; canvas.width=W; canvas.height=H;
   const isDark=DB.profile.darkMode===true;
-  const accent=isDark?'#7C6FF7':'#7C6FF7';
+  const accent=cssVar('--accent')||'#12131A';
   const gridC=isDark?'rgba(255,255,255,0.06)':'rgba(0,0,0,0.06)';
   const textC=isDark?'rgba(255,255,255,0.4)':'rgba(0,0,0,0.4)';
 
@@ -874,14 +915,14 @@ function drawLineChart(canvasId) {
   [0,20,40,60,80,100].forEach(v=>{
     const y=pad.t+cH-(v/100)*cH;
     ctx.beginPath(); ctx.moveTo(pad.l,y); ctx.lineTo(W-pad.r,y); ctx.stroke();
-    ctx.fillStyle=textC; ctx.font='10px DM Sans,sans-serif'; ctx.textAlign='right';
+    ctx.fillStyle=textC; ctx.font='10px Instrument Sans,sans-serif'; ctx.textAlign='right';
     ctx.fillText(`${v}%`,pad.l-6,y+4);
   });
 
   const points=months.map((m,i)=>({x:pad.l+(i/(months.length-1||1))*cW,y:pad.t+cH-(m.rate/100)*cH,rate:m.rate,label:m.label}));
 
   const grad=ctx.createLinearGradient(0,pad.t,0,pad.t+cH);
-  grad.addColorStop(0,'rgba(124,111,247,0.2)'); grad.addColorStop(1,'rgba(124,111,247,0)');
+  grad.addColorStop(0,withAlpha(cssVar('--accent')||'#12131A',0.16)); grad.addColorStop(1,withAlpha(cssVar('--accent')||'#12131A',0));
   ctx.beginPath(); ctx.moveTo(points[0].x,points[0].y);
   points.forEach((p,i)=>i>0&&ctx.lineTo(p.x,p.y));
   ctx.lineTo(points[points.length-1].x,pad.t+cH); ctx.lineTo(points[0].x,pad.t+cH);
@@ -893,7 +934,7 @@ function drawLineChart(canvasId) {
 
   points.forEach(p=>{
     ctx.beginPath(); ctx.arc(p.x,p.y,4,0,Math.PI*2); ctx.fillStyle=accent; ctx.fill();
-    ctx.fillStyle=textC; ctx.font='10px DM Sans,sans-serif'; ctx.textAlign='center';
+    ctx.fillStyle=textC; ctx.font='10px Instrument Sans,sans-serif'; ctx.textAlign='center';
     ctx.fillText(p.label,p.x,H-4);
   });
 }
@@ -922,19 +963,19 @@ function drawMoodChart(canvasId) {
 
   if(validPoints.length>1){
     const grad=ctx.createLinearGradient(0,pad.t,0,pad.t+cH);
-    grad.addColorStop(0,'rgba(124,111,247,0.2)'); grad.addColorStop(1,'rgba(124,111,247,0)');
+    grad.addColorStop(0,withAlpha(cssVar('--accent')||'#12131A',0.16)); grad.addColorStop(1,withAlpha(cssVar('--accent')||'#12131A',0));
     ctx.beginPath(); ctx.moveTo(validPoints[0].x,validPoints[0].y);
     validPoints.forEach((p,i)=>i>0&&ctx.lineTo(p.x,p.y));
     ctx.lineTo(validPoints[validPoints.length-1].x,pad.t+cH); ctx.lineTo(validPoints[0].x,pad.t+cH);
     ctx.closePath(); ctx.fillStyle=grad; ctx.fill();
     ctx.beginPath(); ctx.moveTo(validPoints[0].x,validPoints[0].y);
     validPoints.forEach((p,i)=>i>0&&ctx.lineTo(p.x,p.y));
-    ctx.strokeStyle='#7C6FF7'; ctx.lineWidth=2; ctx.lineJoin='round'; ctx.stroke();
+    ctx.strokeStyle=cssVar('--accent')||'#12131A'; ctx.lineWidth=2; ctx.lineJoin='round'; ctx.stroke();
   }
 
   days.forEach((d,i)=>{
     const m=moods[i]; const x=pad.l+(i/6)*cW;
-    ctx.fillStyle=textC; ctx.font='10px DM Sans,sans-serif'; ctx.textAlign='center';
+    ctx.fillStyle=textC; ctx.font='10px Instrument Sans,sans-serif'; ctx.textAlign='center';
     ctx.fillText(d.label[0],x,H-4);
     if(m!==null){
       const y=pad.t+cH-((m-1)/4)*cH;
@@ -951,14 +992,14 @@ function renderMyHabits() {
     ${HABITS.map(h=>{
       const streak=calcStreak(h).current;
       const done=isHabitDoneOn(h,t,todayDate);
-      return `<div class="my-habit-row" data-habit-id="${h.id}">
-        <div class="my-habit-emoji" style="background:${h.color+'22'}">${h.emoji}</div>
+      return `<div class="my-habit-row" data-habit-id="${h.id}" style="--ink:${h.color}">
+        <div class="my-habit-emoji">${habitIconMarkup(h)}</div>
         <div class="my-habit-info">
           <div class="my-habit-name">${h.name}</div>
-          <div class="my-habit-meta">${h.freq||'Everyday'} · ${h.type}</div>
+          <div class="my-habit-meta">${h.freq||'Tous les jours'}</div>
         </div>
-        <div class="my-habit-streak">🔥 ${streak}d</div>
-        <div class="habit-toggle-btn${done?' done':''}" style="${done?`background:${h.color};border-color:${h.color}`:`border-color:${h.color+'60'}`}" onclick="toggleHabit('${h.id}')">
+        <div class="my-habit-streak">🔥 ${streak} j</div>
+        <div class="habit-toggle-btn${done?' done':''}" onclick="toggleHabit('${h.id}')">
           <svg class="check-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 10 8 14 16 6"/></svg>
         </div>
       </div>`;
@@ -1050,7 +1091,7 @@ function renderAccount() {
       <div class="pref-card">
         <div class="pref-row">
           <div class="pref-info"><span class="pref-icon">✏️</span><div><div class="pref-label-text">Display name</div><div class="pref-hint">${name}</div></div></div>
-          <button class="pref-toggle on" onclick="openProfile()" style="padding:0 12px;font-size:.75rem">Edit</button>
+          <button class="pref-edit" onclick="openProfile()">Modifier</button>
         </div>
         <div class="pref-row">
           <div class="pref-info"><span class="pref-icon">🌙</span><div><div class="pref-label-text">Dark mode</div><div class="pref-hint">Switch theme</div></div></div>
@@ -1320,7 +1361,7 @@ function renderSleepSummary() {
   const log = (DB.sleepLog || {})[t];
 
   if(!log) {
-    el.innerHTML = `<span style="color:var(--text-3);font-size:.85rem">Aucune donnée — appuyez sur "Enter" pour saisir</span>`;
+    el.innerHTML = `<p class="sleep-empty">Pas encore de nuit saisie aujourd'hui.</p>`;
     return;
   }
 
